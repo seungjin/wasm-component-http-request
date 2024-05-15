@@ -10,12 +10,11 @@ use spin_sdk::http_component;
 fn handle_foo(req: Request) -> anyhow::Result<impl IntoResponse> {
     println!("Handling request to {:?}", req.header("spin-full-url"));
 
-    let http_get_body = get("https://google.com").unwrap();
-    println!("{}", http_get_body);
+    let http_body = get("https://catfact.ninja/fact").unwrap();
 
     Ok(Response::builder()
         .status(200)
         .header("content-type", "text/plain")
-        .body("Hello, Fermyon")
+        .body(http_body)
         .build())
 }

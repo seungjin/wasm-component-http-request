@@ -33,28 +33,27 @@ impl rekuest::Guest for Component {
         poll::poll(&[&pollable]);
 
         let incoming_response = res.get().unwrap().unwrap().unwrap();
-        match incoming_response.status() {
-            _ => {
-                let a = incoming_response.consume().unwrap();
-                let b = a.stream().unwrap();
+        let incoming_body = incoming_response.consume().unwrap();
+        let input_stream = incoming_body.stream().unwrap();
 
-                let a = incoming_response
-                    .headers()
-                    .get(&"content-length".to_string());
+        let mut body: Vec<u8> = Vec::new();
 
-                let joined: Vec<u8> =
-                    a.iter().flat_map(|v| v.iter().cloned()).collect();
-
-                let content_length =
-                    String::from_utf8(joined).unwrap().parse::<u64>().unwrap();
-
-                let content =
-                    String::from_utf8(b.read(content_length).unwrap())
-                        .unwrap();
-
-                Ok(content)
+        loop {
+            let item = match input_stream.read(1024) {
+                Ok(x) => x,
+                Err(x) => break,
+            };
+            if item.is_empty() {
+                break;
+            }
+            for i in item.into_iter() {
+                body.push(i);
             }
         }
+
+        let body_string = String::from_utf8(body).unwrap();
+
+        Ok(body_string)
     }
 }
 
