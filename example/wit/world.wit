@@ -1,0 +1,5 @@
+package seungjin:spin-example@0.1.0;
+
+world spin-example{
+    import seungjin:pouch/rekuest@0.1.0;
+}

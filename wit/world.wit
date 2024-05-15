@@ -1,0 +1,10 @@
+package seungjin:pouch@0.1.0;
+
+world pouch {
+    export rekuest;
+}
+
+interface rekuest {
+    get: func(url: string) -> result<string, u32>;
+}
+
